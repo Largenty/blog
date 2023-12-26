@@ -33,7 +33,7 @@ class ArticleController extends Controller
             "description" => "required|string"
         ]);
 
-        $data = array_merge($validatedData, ['user_id' => 1]);
+        $data = array_merge($validatedData, ['user_id' => auth()->id()]);
 
         $article = Article::create($data);
 
@@ -63,11 +63,15 @@ class ArticleController extends Controller
             "description" => "sometimes|string"
         ]);
 
-        $data = array_merge($validatedData, ['user_id' => 1]);
+        // $data = array_merge($validatedData, ['user_id' => auth()->id()]);
+
+        if ($article->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Action non autorisée'], 403);
+        }
 
         $article = Article::findOrFail($article->id);
 
-        $article->update($data);
+        $article->update($validatedData);
 
         // return response()->json($article);
 
@@ -79,6 +83,10 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+        if ($article->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Action non autorisée'], 403);
+        }
+        
         $article->delete();
         return response(status: 204);
     }
