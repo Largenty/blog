@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+
+Route::get('/db-test', function () {
+    try {
+        $connectionStatus = DB::connection()->getPdo();
+        return 'Connecté avec succès à la base de données: ' . DB::connection()->getDatabaseName();
+    } catch (\Exception $e) {
+        return 'Erreur lors de la connexion à la base de données : ' . $e->getMessage();
+    }
 });
