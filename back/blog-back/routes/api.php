@@ -28,6 +28,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::put('/user/update', [AuthController::class,'updateUser']);
+    Route::put('/user/password', [AuthController::class,'modifyPassword']);
+    
     Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
     Route::put('articles/{article}', [ArticleController::class, 'update']);
     Route::patch('articles/{article}', [ArticleController::class, 'update']);
