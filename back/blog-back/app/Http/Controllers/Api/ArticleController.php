@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
 
@@ -13,9 +14,13 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::orderBy('created_at', 'desc')->paginate(10);
+        //$articles = Article::orderBy('created_at', 'desc')->paginate(10);
 
-        return response()->json($articles);
+        // return response()->json($articles);
+
+        $articles = Article::with('user')->orderBy('created_at', 'desc')->paginate(10);
+
+        return ArticleResource::collection($articles);
     }
 
     /**
@@ -32,7 +37,9 @@ class ArticleController extends Controller
 
         $article = Article::create($data);
 
-        return response()->json($article);
+        // return response()->json($article);
+
+        return new ArticleResource($article);
     }
 
     /**
@@ -40,7 +47,9 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        return response()->json($article);
+        // return response()->json($article);
+
+        return new ArticleResource($article);
     }
 
 
@@ -60,7 +69,9 @@ class ArticleController extends Controller
 
         $article->update($data);
 
-        return response()->json($article);
+        // return response()->json($article);
+
+        return new ArticleResource($article);
     }
 
     /**
