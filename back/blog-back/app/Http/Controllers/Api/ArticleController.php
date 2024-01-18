@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ArticleController extends Controller
 {
@@ -33,7 +35,10 @@ class ArticleController extends Controller
             "description" => "required|string"
         ]);
 
-        $data = array_merge($validatedData, ['user_id' => auth()->id()]);
+        Log::info(auth()->user());
+        error_log('Données validées');
+
+        $data = array_merge($validatedData, ['user_id' => Auth::id()]);
 
         $article = Article::create($data);
 
@@ -86,7 +91,7 @@ class ArticleController extends Controller
         if ($article->user_id !== auth()->id()) {
             return response()->json(['error' => 'Action non autorisée'], 403);
         }
-        
+
         $article->delete();
         return response(status: 204);
     }
